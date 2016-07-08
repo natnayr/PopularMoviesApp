@@ -18,8 +18,6 @@ public class ImageAdapter extends BaseAdapter {
 
     private Context mContext;
     private final ArrayList<Movie> mMovies;
-    private final int mHeight;
-    private final int mWidth;
 
     private static final String LOG_TAG =
             ImageAdapter.class.getSimpleName();
@@ -27,8 +25,7 @@ public class ImageAdapter extends BaseAdapter {
     public ImageAdapter(Context c) {
         mContext = c;
         mMovies = new ArrayList<Movie>();
-        mHeight = Math.round(mContext.getResources().getDimension(R.dimen.poster_height));
-        mWidth = Math.round(mContext.getResources().getDimension(R.dimen.poster_width));
+
     }
 
     public void addAll(Collection<Movie> all){
@@ -75,7 +72,6 @@ public class ImageAdapter extends BaseAdapter {
         }else{
             imageView = (ImageView) convertView;
         }
-
 
         Uri builtUri = movie.buildPosterUri(mContext.getString(R.string.api_poster_default_size));
 

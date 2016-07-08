@@ -1,5 +1,6 @@
 package com.natnayr.popularmoviesapp;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.natnayr.popularmoviesapp.model.Movie;
@@ -56,7 +58,29 @@ public class MainActivityFragment extends Fragment{
         if(gridView == null){
             return null;
         }
+
         gridView.setAdapter(mImages);
+
+        //Set on-touch-listener to grid item.
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+                ImageAdapter adapter = (ImageAdapter) parent.getAdapter();
+                Movie movie = adapter.getItem(position);
+
+                if(movie == null){
+                    return;
+                }
+
+                //Intent fires up activity and passes Bundle of info..
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra(Movie.MOVIE_EXTRA, movie.toBundle());
+
+                getActivity().startActivity(intent);
+            }
+        });
 
         return view;
     }
@@ -83,15 +107,6 @@ public class MainActivityFragment extends Fragment{
 
             final String TMDB_RESULT = "results";
 
-            final String TMDB_ID = "id";
-            final String TMDB_TITLE = "title";
-            final String TMDB_RELEASE_DATE = "release_date";
-            final String TMDB_OVERVIEW = "overview";
-            final String TMDB_POSTER_PATH = "poster_path";
-            final String TMDB_VOTE_AVG = "vote_average";
-
-
-
             JSONObject moviesJsonObj = new JSONObject(movieJsonStr);
             JSONArray resultArray = moviesJsonObj.getJSONArray(TMDB_RESULT);
 
@@ -99,9 +114,7 @@ public class MainActivityFragment extends Fragment{
 
             for(int i=0; i<resultArray.length(); i++){
                 JSONObject entry = resultArray.getJSONObject(i);
-                moviesArr[i] = new Movie(entry.getLong(TMDB_ID), entry.getString(TMDB_TITLE), entry.getString(TMDB_OVERVIEW),
-                        entry.getString(TMDB_POSTER_PATH), entry.getString(TMDB_RELEASE_DATE), entry.getString(TMDB_VOTE_AVG));
-
+                moviesArr[i] = Movie.fromJson(entry);
             }
 
             return moviesArr;
@@ -184,6 +197,7 @@ public class MainActivityFragment extends Fragment{
 
         @Override
         protected void onPostExecute(Movie[] movies) {
+
             if(movies != null){
                 mImages.addAll(Arrays.asList(movies));
             }
