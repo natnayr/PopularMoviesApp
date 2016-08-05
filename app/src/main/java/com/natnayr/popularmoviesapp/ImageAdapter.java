@@ -52,7 +52,7 @@ public class ImageAdapter extends BaseAdapter {
         if(movie == null){
             return -1L;
         }
-        return movie.id;
+        return movie.movieid;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        Uri builtUri = movie.buildPosterUri(mContext.getString(R.string.api_poster_default_size));
+        Uri builtUri = Utilities.buildPosterUri(mContext.getString(R.string.api_poster_default_size), movie.poster_path);
 
         Log.v(LOG_TAG, "url: " + builtUri.toString());
 

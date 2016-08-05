@@ -1,6 +1,5 @@
 package com.natnayr.popularmoviesapp.model;
 
-import android.net.Uri;
 import android.os.Bundle;
 
 import org.json.JSONException;
@@ -11,80 +10,51 @@ import org.json.JSONObject;
  */
 public class Movie {
 
-    public static final String KEY_ID = "id";
-    public static final String KEY_TITLE = "title";
-    public static final String KEY_OVERVIEW = "overview";
-    public static final String KEY_POSTER_PATH = "poster_path";
-    public static final String KEY_VOTE_AVERAGE = "vote_average";
-    public static final String KEY_VOTE_COUNT = "vote_count";
-    public static final String KEY_RELEASE_DATE = "release_date";
-    public static final String MOVIE_EXTRA = Movie.class.toString();
+    public static final String MOVIE_EXTRA = "com.natnayr.popularmoviesapp.MOVIE_EXTRA";
+    public static final String TMDB_RESULTS = "results";
+    public static final String TMDB_MOVIE_ID = "id";
+    public static final String TMDB_POSTER_PATH = "poster_path";
+    public static final String TMDB_ORIGINAL_TITLE = "original_title";
+    public static final String TMDB_USER_RATING = "vote_average";
 
-    public final long id;
-    public final String title;
-    public final String poster_path;
-    public final String overview;
-    public final double vote_average;
-    public final long vote_count;
-    public final String release_date;
 
-    public Movie(long id, String title, String overview, String poster_path,
-                 double vote_average, long vote_count, String release_date){
-        this.id = id;
+    public long movieid;
+    public String title;
+    public String poster_path;
+    public double vote_average;
+
+    public Movie(long movieid, String title, String poster_path, double vote_average){
+        this.movieid = movieid;
         this.title = title;
-        this.overview = overview;
         this.poster_path = poster_path;
         this.vote_average = vote_average;
-        this.vote_count = vote_count;
-        this.release_date = release_date;
     }
 
     public Movie (Bundle bundle){
         this(
-                bundle.getLong(KEY_ID),
-                bundle.getString(KEY_TITLE),
-                bundle.getString(KEY_OVERVIEW),
-                bundle.getString(KEY_POSTER_PATH),
-                bundle.getDouble(KEY_VOTE_AVERAGE),
-                bundle.getLong(KEY_VOTE_COUNT),
-                bundle.getString(KEY_RELEASE_DATE)
+                bundle.getLong(TMDB_MOVIE_ID),
+                bundle.getString(TMDB_ORIGINAL_TITLE),
+                bundle.getString(TMDB_POSTER_PATH),
+                bundle.getDouble(TMDB_USER_RATING)
         );
     }
 
-    public Uri buildPosterUri(String size) {
-        final String BASE_URL = "http://image.tmdb.org/t/p/";
-
-        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                .appendPath(size)
-                .appendEncodedPath(poster_path)
-                .build();
-
-        return builtUri;
-    }
 
     public static Movie fromJson(JSONObject jsonObject) throws JSONException{
         return new Movie(
-                jsonObject.getLong(KEY_ID),
-                jsonObject.getString(KEY_TITLE),
-                jsonObject.getString(KEY_OVERVIEW),
-                jsonObject.getString(KEY_POSTER_PATH),
-                jsonObject.getDouble(KEY_VOTE_AVERAGE),
-                jsonObject.getLong(KEY_VOTE_COUNT),
-                jsonObject.getString(KEY_RELEASE_DATE)
-
+                jsonObject.getLong(TMDB_MOVIE_ID),
+                jsonObject.getString(TMDB_ORIGINAL_TITLE),
+                jsonObject.getString(TMDB_POSTER_PATH),
+                jsonObject.getDouble(TMDB_USER_RATING)
         );
     }
 
     public Bundle toBundle(){
         Bundle bundle = new Bundle();
-
-        bundle.putLong(KEY_ID, id);
-        bundle.putString(KEY_TITLE, title);
-        bundle.putString(KEY_OVERVIEW, overview);
-        bundle.putString(KEY_POSTER_PATH, poster_path);
-        bundle.putDouble(KEY_VOTE_AVERAGE, vote_average);
-        bundle.putLong(KEY_VOTE_COUNT, vote_count);
-        bundle.putString(KEY_RELEASE_DATE, release_date);
+        bundle.putLong(TMDB_MOVIE_ID, movieid);
+        bundle.putString(TMDB_ORIGINAL_TITLE, title);
+        bundle.putString(TMDB_POSTER_PATH, poster_path);
+        bundle.putDouble(TMDB_USER_RATING, vote_average);
 
         return bundle;
     }
