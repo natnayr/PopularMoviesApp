@@ -4,18 +4,18 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.natnayr.popularmoviesapp.data.MovieContract.MovieEntry;
-import com.natnayr.popularmoviesapp.data.MovieContract.VideoEntry;
+import com.natnayr.popularmoviesapp.data.MovieVideoContract.MovieEntry;
+import com.natnayr.popularmoviesapp.data.MovieVideoContract.VideoEntry;
 
 /**
  * Created by Ryan on 3/8/16.
  */
-public class MovieDbHelper extends SQLiteOpenHelper {
+public class MovieVideoDbHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-    static final String DATABASE_NAME = "movies.db";
+    public static final String DATABASE_NAME = "movies.db";
 
-    public MovieDbHelper(Context context){
+    public MovieVideoDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -36,6 +36,8 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieEntry.COLUMN_RUNTIME + " INTEGER, " +
                 MovieEntry.COLUMN_IMDB_ID + " TEXT, " +
                 MovieEntry.COLUMN_ORIGINAL_LANGUAGE + " TEXT, " +
+
+                //is_favourite checkbox
                 MovieEntry.COLUMN_IS_FAVORITE + " INTEGER DEFAULT 0 NOT NULL);";
 
 
@@ -44,25 +46,25 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 VideoEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 
                 //reference to movie entry
-                VideoEntry.COLUMN_MOVIE_KEY + " INTEGER NOT NULL, " +
+                VideoEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
 
-                VideoEntry.COLUMN_VIDEO_NAME + " TEXT NOT NULL, " +
+                VideoEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 VideoEntry.COLUMN_KEY + " TEXT NOT NULL, " +
-                VideoEntry.COLUMN_SIZE + " TEXT NOT NULL, " +
+                VideoEntry.COLUMN_SIZE + " INTEGER NOT NULL, " +
                 VideoEntry.COLUMN_SITE + " TEXT NOT NULL, " +
                 VideoEntry.COLUMN_TYPE + " TEXT NOT NULL, " +
 
-                //hex video id given by tmdb
-                VideoEntry.COLUMN_VIDEO_KEY + " TEXT UNIQUE NOT NULL, " +
+                //hex video id by TMDB
+                VideoEntry.COLUMN_TMDB_VIDEO_ID + " TEXT UNIQUE NOT NULL, " +
 
                 // Set up the movie column as a foreign key to video table.
-                " FOREIGN KEY (" + VideoEntry.COLUMN_MOVIE_KEY + ") REFERENCES " +
+                " FOREIGN KEY (" + VideoEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
                 MovieEntry.TABLE_NAME + " (" + MovieEntry._ID + "), " +
 
                 // To assure the application have just one weather entry per day
                 // per location, it's created a UNIQUE constraint with REPLACE strategy
-                " UNIQUE (" + VideoEntry.COLUMN_MOVIE_KEY + ", " +
-                VideoEntry.COLUMN_VIDEO_KEY + ") ON CONFLICT REPLACE);";
+                " UNIQUE (" + VideoEntry.COLUMN_MOVIE_ID + ", " +
+                VideoEntry.COLUMN_TMDB_VIDEO_ID + ") ON CONFLICT REPLACE);";
 
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_VIDEO_TABLE);

@@ -8,7 +8,7 @@ import android.provider.BaseColumns;
 /**
  * Created by Ryan on 3/8/16.
  */
-public class MovieContract {
+public class MovieVideoContract {
 
     //name of entire content provider
     public static final String CONTENT_AUTHORITY = "com.natnayr.popularmoviesapp";
@@ -58,6 +58,7 @@ public class MovieContract {
         public static Uri buildMovieUri(long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
+
     }
 
     public static final class VideoEntry implements BaseColumns {
@@ -73,12 +74,10 @@ public class MovieContract {
         public static final String TABLE_NAME = "video";
 
         //Column pointing to foreign key in movie table
-        public static final String COLUMN_MOVIE_KEY = "movie_key";
-
-        public static final String COLUMN_VIDEO_KEY = "video_key";
+        public static final String COLUMN_MOVIE_ID = "movie_id";
 
         //Title on online video
-        public static final String COLUMN_VIDEO_NAME = "video_name";
+        public static final String COLUMN_NAME = "name";
 
         public static final String COLUMN_KEY = "key";
 
@@ -89,6 +88,16 @@ public class MovieContract {
 
         public static final String COLUMN_TYPE = "type";
 
+        //TMDB video hex
+        public static final String COLUMN_TMDB_VIDEO_ID = "tmdb_video_id";
 
+        public static Uri buildVideoWithMovieKey(long id){
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+
+    public static String getMovieKeyFromUri(Uri uri){
+        return uri.getPathSegments().get(1);
     }
 }
