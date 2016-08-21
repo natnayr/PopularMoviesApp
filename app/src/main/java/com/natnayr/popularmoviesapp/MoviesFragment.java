@@ -14,25 +14,27 @@ import android.widget.Toast;
 
 import com.natnayr.popularmoviesapp.model.Movie;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
  * Created by Ryan on 4/7/16.
  */
-public class PopularMoviesFragment extends Fragment{
 
-    private static final String LOG_TAG = PopularMoviesFragment.class.getSimpleName();
+
+public class MoviesFragment extends Fragment{
+
+    private static final String LOG_TAG = MoviesFragment.class.getSimpleName();
 
     private ImageAdapter mImages;
-    private int mPagesLoaded = 0; //TODO: store in saved instance, ForecastFragment
-    private boolean mIsLoading = false; //TODO: store in saved instance, ForecastFragment
-    private int mPosition = GridView.INVALID_POSITION;
+    private int mPagesLoaded = 0;
+    private boolean mIsLoading = false;
 
-    private static final String SELECTED_KEY = "selected_position";
-
+    private static final String LAST_PAGE_KEY = "last_page";
+    private static final String MOVIE_LIST_KEY = "movie_list";
     private static final int MAX_PAGES = 100;
 
-    public PopularMoviesFragment(){
+    public MoviesFragment(){
     }
 
 
@@ -52,11 +54,21 @@ public class PopularMoviesFragment extends Fragment{
 
         initGridView(view);
 
-        if(savedInstanceState != null && savedInstanceState.containsKey(SELECTED_KEY)){
-            mPosition = savedInstanceState.getInt(SELECTED_KEY);
+        Log.v(LOG_TAG, "TEST: savedInstanceState null? " + (savedInstanceState == null));
+
+        if(savedInstanceState != null){
+            //restore ImageAdapter of images
+            if(savedInstanceState.containsKey(MOVIE_LIST_KEY)) {
+                ArrayList<Movie> movieList = savedInstanceState.getParcelableArrayList(MOVIE_LIST_KEY);
+                mImages.addAll(movieList);
+            }
+            if(savedInstanceState.containsKey(LAST_PAGE_KEY)){
+                mPagesLoaded = savedInstanceState.getInt(LAST_PAGE_KEY);
+            }
+        }else{
+            startLoading();
         }
 
-        startLoading();
 
         return view;
     }
@@ -82,6 +94,7 @@ public class PopularMoviesFragment extends Fragment{
                 Movie movie = adapter.getItem(position);
 
                 if(movie == null){
+                    Log.e(LOG_TAG, "Error: movie selected is null");
                     return;
                 }
 
@@ -89,11 +102,8 @@ public class PopularMoviesFragment extends Fragment{
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
                 intent.putExtra(Movie.MOVIE_EXTRA, movie.toBundle());
                 getActivity().startActivity(intent);
-
-                mPosition = position;
             }
         });
-
 
         gridView.setOnScrollListener(
                 new AbsListView.OnScrollListener(){
@@ -101,28 +111,34 @@ public class PopularMoviesFragment extends Fragment{
                     @Override
                     public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItem, int totalItemCount) {
                         int lastInScreen = firstVisibleItem + visibleItem;
-                        if(totalItemCount == lastInScreen){
+                        //hack, everytime activity refreshes, this gets called
+                        if(totalItemCount == lastInScreen && mPagesLoaded > 0){
                             startLoading();
-
-                            Log.v(LOG_TAG, "TEST: first:" + firstVisibleItem + ", visible:" + visibleItem + ", total:" + totalItemCount);
                         }
                     }
 
                     //for implenting funtionality during scrolling/idle
                     @Override
-                    public void onScrollStateChanged(AbsListView absListView, int i) {
-
-                    }
+                    public void onScrollStateChanged(AbsListView absListView, int i) { }
                 }
         );
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        if(mPosition != GridView.INVALID_POSITION){
-            outState.putInt(SELECTED_KEY, mPosition);
-        }
+        //store onto saved bundle entrie Movie arraylist
+        ArrayList<Movie> loadedMovies = mImages.getValues();
+        outState.putParcelableArrayList(MOVIE_LIST_KEY, loadedMovies);
+
+        //store page number
+        outState.putInt(LAST_PAGE_KEY, mPagesLoaded);
+
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onActivityCreated( Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     public void startLoading(){
@@ -163,7 +179,6 @@ public class PopularMoviesFragment extends Fragment{
 
         mIsLoading = false;
     }
-
 
 
 }

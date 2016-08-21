@@ -1,6 +1,8 @@
 package com.natnayr.popularmoviesapp.model;
 
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,7 +10,7 @@ import org.json.JSONObject;
 /**
  * Created by Ryan on 7/7/16.
  */
-public class Movie {
+public class Movie implements Parcelable {
 
     public static final String MOVIE_EXTRA = "com.natnayr.popularmoviesapp.MOVIE_EXTRA";
     public static final String TMDB_RESULTS = "results";
@@ -39,6 +41,13 @@ public class Movie {
         );
     }
 
+    private Movie(Parcel parcel){
+        this.movieid = parcel.readLong();
+        this.title = parcel.readString();
+        this.poster_path = parcel.readString();
+        this.vote_average = parcel.readDouble();
+    }
+
 
     public static Movie fromJson(JSONObject jsonObject) throws JSONException{
         return new Movie(
@@ -59,4 +68,28 @@ public class Movie {
         return bundle;
     }
 
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeLong(this.movieid);
+        parcel.writeString(this.title);
+        parcel.writeString(this.poster_path);
+        parcel.writeDouble(this.vote_average);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>(){
+        @Override
+        public Movie createFromParcel(Parcel parcel) {
+            return new Movie(parcel);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }

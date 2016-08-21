@@ -46,7 +46,6 @@ public class FetchMovieTask extends AsyncTask<String, Void, Collection<Movie>>{
         }
 
         return moviesArr;
-
     }
 
     @Override

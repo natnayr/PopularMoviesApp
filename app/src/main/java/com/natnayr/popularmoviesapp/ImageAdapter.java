@@ -25,12 +25,15 @@ public class ImageAdapter extends BaseAdapter {
     public ImageAdapter(Context c) {
         mContext = c;
         mMovies = new ArrayList<Movie>();
-
     }
 
     public void addAll(Collection<Movie> all){
         mMovies.addAll(all);
         notifyDataSetChanged();
+    }
+
+    public ArrayList<Movie> getValues(){
+        return mMovies;
     }
 
     @Override

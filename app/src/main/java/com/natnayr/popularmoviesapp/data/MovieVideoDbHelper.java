@@ -12,7 +12,9 @@ import com.natnayr.popularmoviesapp.data.MovieVideoContract.VideoEntry;
  */
 public class MovieVideoDbHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final String LOG_TAG = MovieVideoDbHelper.class.getSimpleName();
+
+    private static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "movies.db";
 
     public MovieVideoDbHelper(Context context){
@@ -42,29 +44,24 @@ public class MovieVideoDbHelper extends SQLiteOpenHelper {
 
 
         final String SQL_CREATE_VIDEO_TABLE = "CREATE TABLE " + VideoEntry.TABLE_NAME + " (" +
-                //no choice
-                VideoEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-
                 //reference to movie entry
                 VideoEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
 
-                VideoEntry.COLUMN_NAME + " TEXT NOT NULL, " +
-                VideoEntry.COLUMN_KEY + " TEXT NOT NULL, " +
-                VideoEntry.COLUMN_SIZE + " INTEGER NOT NULL, " +
-                VideoEntry.COLUMN_SITE + " TEXT NOT NULL, " +
-                VideoEntry.COLUMN_TYPE + " TEXT NOT NULL, " +
+                VideoEntry.COLUMN_NAME + " TEXT, " +
+                VideoEntry.COLUMN_KEY + " TEXT UNIQUE, " +
+                VideoEntry.COLUMN_SIZE + " INTEGER, " +
+                VideoEntry.COLUMN_SITE + " TEXT, " +
+                VideoEntry.COLUMN_VIDEO_TYPE + " TEXT, " +
 
                 //hex video id by TMDB
-                VideoEntry.COLUMN_TMDB_VIDEO_ID + " TEXT UNIQUE NOT NULL, " +
+                VideoEntry.COLUMN_TMDB_VIDEO_ID + " TEXT UNIQUE, " +
 
                 // Set up the movie column as a foreign key to video table.
                 " FOREIGN KEY (" + VideoEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
                 MovieEntry.TABLE_NAME + " (" + MovieEntry._ID + "), " +
 
-                // To assure the application have just one weather entry per day
-                // per location, it's created a UNIQUE constraint with REPLACE strategy
-                " UNIQUE (" + VideoEntry.COLUMN_MOVIE_ID + ", " +
-                VideoEntry.COLUMN_TMDB_VIDEO_ID + ") ON CONFLICT REPLACE);";
+                " PRIMARY KEY ( " + VideoEntry.COLUMN_MOVIE_ID + ", " + VideoEntry.COLUMN_KEY + " )); ";
+
 
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_VIDEO_TABLE);
