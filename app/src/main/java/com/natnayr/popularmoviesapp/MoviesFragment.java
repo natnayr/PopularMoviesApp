@@ -54,8 +54,6 @@ public class MoviesFragment extends Fragment{
 
         initGridView(view);
 
-        Log.v(LOG_TAG, "TEST: savedInstanceState null? " + (savedInstanceState == null));
-
         if(savedInstanceState != null){
             //restore ImageAdapter of images
             if(savedInstanceState.containsKey(MOVIE_LIST_KEY)) {
@@ -100,7 +98,7 @@ public class MoviesFragment extends Fragment{
 
                 //Intent fires up activity and passes Bundle of info..
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra(Movie.MOVIE_EXTRA, movie.toBundle());
+                intent.putExtra(Movie.MOVIE_EXTRA, movie);
                 getActivity().startActivity(intent);
             }
         });

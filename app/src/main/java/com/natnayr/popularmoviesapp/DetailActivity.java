@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.natnayr.popularmoviesapp.model.Movie;
 
@@ -25,16 +24,16 @@ public class DetailActivity extends AppCompatActivity{
 
         if(intent != null && intent.hasExtra(Movie.MOVIE_EXTRA)){
 
-            Movie movie = new Movie(intent.getBundleExtra(Movie.MOVIE_EXTRA));
-            ((TextView)findViewById(R.id.movie_title)).setText(movie.title);
-            ((TextView)findViewById(R.id.movie_rating)).setText(Double.toString(movie.vote_average) + "/10");
-//            ((TextView)findViewById(R.id.movie_release_date)).setText(movie.release_date);
-//            ((TextView)findViewById(R.id.movie_overview)).setText(movie.overview);
+            Bundle arguments = getIntent().getExtras();
 
-//            Uri posterUri = movie.buildPosterUri(getString(R.string.api_poster_default_size));
-//            Picasso.with(this)
-//                    .load(posterUri)
-//                    .into((ImageView)findViewById(R.id.movie_poster));
+            DetailFragment fragment = new DetailFragment();
+            fragment.setArguments(arguments);
+
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.movie_detail_container, fragment)
+                    .commit();
+
+
         }
 
     }
