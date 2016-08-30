@@ -1,6 +1,5 @@
 package com.natnayr.popularmoviesapp;
 
-import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -15,12 +14,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ActionBar actionBar = getActionBar();
-        if(actionBar != null) {
-            actionBar.setHomeButtonEnabled(false);
-            actionBar.setDisplayHomeAsUpEnabled(false);
-            actionBar.setDisplayShowHomeEnabled(false);
-        }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
 
         if(savedInstanceState == null){
             MoviesFragment fragment = new MoviesFragment();

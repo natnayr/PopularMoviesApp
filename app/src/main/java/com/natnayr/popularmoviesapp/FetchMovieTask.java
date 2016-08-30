@@ -133,5 +133,8 @@ public class FetchMovieTask extends AsyncTask<String, Void, Collection<Movie>>{
     @Override
     protected void onPostExecute(Collection<Movie> movies) {
         mFragmentCallback.onTaskDone(movies);
+        super.onPostExecute(movies);
     }
+
+
 }

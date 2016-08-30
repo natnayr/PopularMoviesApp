@@ -21,7 +21,6 @@ import java.util.Collection;
  * Created by Ryan on 4/7/16.
  */
 
-
 public class MoviesFragment extends Fragment{
 
     private static final String LOG_TAG = MoviesFragment.class.getSimpleName();
@@ -153,7 +152,8 @@ public class MoviesFragment extends Fragment{
 
         FetchMovieTask fmt = new FetchMovieTask(new FragmentCallback() {
             @Override
-            public void onTaskDone(Collection<Movie> movies) {
+            public void onTaskDone(Object object) {
+                Collection<Movie> movies = (Collection<Movie>) object;
                 mPagesLoaded++;
                 stopLoading();
                 if(movies != null) {

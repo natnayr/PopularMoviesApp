@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,7 +31,6 @@ public class DetailMovieFragment extends Fragment implements LoaderManager.Loade
 
     private static final String[] DETAIL_COLUMNS = {
             MovieEntry.TABLE_NAME + "." + MovieEntry._ID,
-            MovieEntry._ID,
             MovieEntry.COLUMN_ORIGINAL_TITLE,
             MovieEntry.COLUMN_RELEASE_DATE,
             MovieEntry.COLUMN_POSTER_PATH,
@@ -74,7 +72,6 @@ public class DetailMovieFragment extends Fragment implements LoaderManager.Loade
         Bundle arguements = getArguments();
         if(arguements != null && arguements.containsKey(Movie.MOVIE_EXTRA)){
             mParsedMovie = (Movie) arguements.getParcelable(Movie.MOVIE_EXTRA);
-            Log.d(LOG_TAG, "TEST: movieid " + mParsedMovie.movieid);
         }
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
@@ -84,12 +81,6 @@ public class DetailMovieFragment extends Fragment implements LoaderManager.Loade
         mMovieRatingView = (TextView) rootView.findViewById(R.id.movie_rating);
         mReleaseDateView = (TextView) rootView.findViewById(R.id.movie_release_date);
         mOverviewView = (TextView) rootView.findViewById(R.id.movie_overview);
-
-
-//            Uri posterUri = movie.buildPosterUri(getString(R.string.api_poster_default_size));
-//            Picasso.with(this)
-//                    .load(posterUri)
-//                    .into((ImageView)findViewById(R.id.movie_poster));
 
 
         return rootView;
@@ -109,6 +100,14 @@ public class DetailMovieFragment extends Fragment implements LoaderManager.Loade
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if(mParsedMovie != null ){
+            //Checks if data exists, retreives and insert if not
+            if(!Utilities.checkIfMovieRecordExists(getActivity(), mParsedMovie.movieid)) {
+                //insert new record in via FetchDetailMovieTask
+                FetchDetailsTask fdt = new FetchDetailsTask(getActivity());
+                long movieid = mParsedMovie.movieid;
+                fdt.execute(movieid);
+            }
+
             return new CursorLoader(
                     getActivity(),
                     MovieEntry.buildMovieUri(mParsedMovie.movieid),
@@ -117,20 +116,32 @@ public class DetailMovieFragment extends Fragment implements LoaderManager.Loade
                     null,
                     null
             );
-
-            CursorLoader loader = new CursorLoader();
-            loader.
         }
         return null;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if(data != null && data.moveToFirst()){
+            String title = data.getString(COL_MOVIE_ORIGINAL_TITLE);
+            mTitleView.setText(title);
 
+            long runtime = data.getLong(COL_MOVIE_RUNTIME);
+            mRunTimeView.setText(Long.toString(runtime));
+
+            double rating = data.getDouble(COL_MOVIE_VOTE_AVERAGE);
+            mMovieRatingView.setText(Double.toString(rating));
+
+            long dateInMills = data.getLong(COL_MOVIE_RELEASE_DATE);
+            mReleaseDateView.setText(Long.toString(dateInMills));
+
+//            Uri posterUri = movie.buildPosterUri(getString(R.string.api_poster_default_size));
+//            Picasso.with(this)
+//                    .load(posterUri)
+//                    .into((ImageView)findViewById(R.id.movie_poster));
+        }
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
+    public void onLoaderReset(Loader<Cursor> loader) { }
 }

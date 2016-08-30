@@ -26,14 +26,16 @@ public class DetailActivity extends AppCompatActivity{
 
             Bundle arguments = getIntent().getExtras();
 
-            DetailFragment fragment = new DetailFragment();
-            fragment.setArguments(arguments);
+            DetailMovieFragment movieDetailFragment = new DetailMovieFragment();
+            movieDetailFragment.setArguments(arguments);
+
+            DetailVideoFragment videoDetailFragment = new DetailVideoFragment();
+            videoDetailFragment.setArguments(arguments);
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.movie_detail_container, fragment)
+                    .add(R.id.movie_detail_container, movieDetailFragment)
+                    .add(R.id.movie_detail_container, videoDetailFragment)
                     .commit();
-
-
         }
 
     }

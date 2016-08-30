@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 
 import com.natnayr.popularmoviesapp.data.MovieVideoContract.MovieEntry;
 import com.natnayr.popularmoviesapp.data.MovieVideoContract.VideoEntry;
@@ -73,7 +72,6 @@ public class MovieVideoProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
         Cursor retCursor;
-        Log.d(LOG_TAG, "TEST Cursor query uri: " + uri.toString());
 
         switch(sUriMatcher.match(uri)){
             case MOVIE_ITEM:{
