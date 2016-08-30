@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,16 +21,16 @@ import com.natnayr.popularmoviesapp.model.Movie;
 /**
  * Created by Ryan on 7/7/16.
  */
-public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class DetailMovieFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    private static final String LOG_TAG = DetailFragment.class.getSimpleName();
+    private static final String LOG_TAG = DetailMovieFragment.class.getSimpleName();
     static final String DETAIL_MOVIE_BUNDLE = "MOVIE_BUNDLE";
 
     private Movie mParsedMovie;
 
     private static final int DETAIL_LOADER = 0;
 
-    private static final String[] MOVIE_COLUMNS = {
+    private static final String[] DETAIL_COLUMNS = {
             MovieEntry.TABLE_NAME + "." + MovieEntry._ID,
             MovieEntry._ID,
             MovieEntry.COLUMN_ORIGINAL_TITLE,
@@ -63,7 +64,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mReleaseDateView;
     private TextView mOverviewView;
 
-    public DetailFragment(){
+    public DetailMovieFragment(){
     }
 
     @Override
@@ -108,9 +109,18 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if(mParsedMovie != null ){
+            return new CursorLoader(
+                    getActivity(),
+                    MovieEntry.buildMovieUri(mParsedMovie.movieid),
+                    DETAIL_COLUMNS,
+                    null,
+                    null,
+                    null
+            );
 
+            CursorLoader loader = new CursorLoader();
+            loader.
         }
-
         return null;
     }
 
